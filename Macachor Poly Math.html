@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Macachor Framework — Scalar Map, Layer Status &amp; Project Archive (v10)</title>
+<style>
+:root {
+  --bg: #0a0a0a;
+  --surface: #111111;
+  --surface-raised: #1a1a1a;
+  --border: #2a2a2a;
+  --border-accent: #3a3a3a;
+  --text: #e8e8e8;
+  --text-muted: #9a9a9a;
+  --text-dim: #6a6a6a;
+  --accent-gold: #c8a04e;
+  --accent-danger: #b33a3a;
+  --accent-fact: #4a8c5c;
+  --accent-open: #c9a227;
+  --mono: 'SF Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+  --serif: 'Georgia', 'Times New Roman', serif;
+  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --max-width: 1000px;
+  --radius: 2px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.7;
+  padding: 0 1.5rem 6rem;
+  -webkit-font-smoothing: antialiased;
+}
+.container { max-width: var(--max-width); margin: 0 auto; padding-top: 3rem; }
+
+.site-header {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 2.5rem;
+  margin-bottom: 2.5rem;
+}
+.site-header h1 {
+  font-family: var(--serif);
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: var(--accent-gold);
+  line-height: 1.2;
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.02em;
+}
+.site-header .subtitle {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+}
+.site-header .deposit {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+  margin-top: 0.75rem;
+}
+
+/* Author block */
+.author-block {
+  background: var(--surface);
+  border: 1px solid var(--border-accent);
+  padding: 1.5rem 2rem;
+  margin-bottom: 2rem;
+  border-radius: var(--radius);
+}
+.author-block .author-name {
+  font-family: var(--serif);
+  font-size: 1.3rem;
+  color: var(--accent-gold);
+  margin-bottom: 0.25rem;
+}
+.author-block .author-meta {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+  line-height: 1.7;
+  word-break: break-all;
+}
+.author-block .author-meta a { color: var(--text-muted); text-decoration: none; }
+.author-block .author-meta a:hover { color: var(--accent-gold); }
+
+/* Polymath note */
+.polymath-note {
+  background: #000;
+  border: 1px solid var(--accent-gold);
+  padding: 2rem;
+  margin-bottom: 2.5rem;
+  border-radius: var(--radius);
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  line-height: 1.8;
+  color: var(--text-muted);
+}
+.polymath-note h3 {
+  color: var(--accent-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border-accent);
+  padding-bottom: 0.5rem;
+}
+.polymath-note strong { color: var(--text); }
+.polymath-note .score {
+  color: var(--accent-gold);
+  font-weight: 600;
+}
+.polymath-note .pass { color: var(--accent-fact); font-weight: 600; }
+.polymath-note .open { color: var(--accent-open); font-weight: 600; }
+.polymath-note p { margin-bottom: 0.75rem; }
+.polymath-note ul { margin: 0.5rem 0 0.75rem 1.2rem; }
+.polymath-note li { margin-bottom: 0.3rem; }
+
+.toc {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 1.5rem 2rem;
+  margin-bottom: 2.5rem;
+  border-radius: var(--radius);
+}
+.toc h2 {
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  color: var(--accent-gold);
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
+}
+.toc ul { list-style: none; columns: 2; column-gap: 2rem; }
+.toc li { margin-bottom: 0.4rem; break-inside: avoid; }
+.toc a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.03em;
+}
+.toc a:hover { color: var(--accent-gold); }
+
+.article-body {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+  border-radius: var(--radius);
+}
+.article-body h2 {
+  font-family: var(--mono);
+  font-size: 1.05rem;
+  text-transform: uppercase;
+  color: var(--accent-gold);
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  letter-spacing: 0.1em;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
+}
+.article-body h2:first-child { margin-top: 0; }
+.article-body h3 {
+  font-family: var(--sans);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+.article-body p { margin-bottom: 1rem; color: var(--text-muted); }
+.article-body ul, .article-body ol { margin-bottom: 1rem; padding-left: 1.5rem; color: var(--text-muted); }
+.article-body li { margin-bottom: 0.4rem; }
+.article-body strong { color: var(--text); font-weight: 500; }
+.article-body code { font-family: var(--mono); font-size: 0.85em; color: var(--accent-gold); background: var(--surface-raised); padding: 0.1rem 0.35rem; border-radius: 2px; }
+.article-body a { color: var(--accent-gold); overflow-wrap: anywhere; }
+
+.status-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.25rem 0;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+}
+.status-table th {
+  text-align: left;
+  padding: 0.6rem;
+  border-bottom: 1px solid var(--border-accent);
+  color: var(--accent-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.status-table td {
+  padding: 0.6rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-muted);
+  vertical-align: top;
+}
+
+.level-primitive { color: var(--accent-gold); font-weight: 600; }
+.level-primitive-state { color: var(--accent-fact); font-weight: 600; }
+.level-action { color: var(--accent-open); font-weight: 600; }
+.level-geometry { color: #7aa3c8; font-weight: 600; }
+.level-3d { color: var(--accent-fact); font-weight: 600; }
+.level-forced2d { color: var(--accent-open); font-weight: 600; }
+.level-trace { color: var(--text-dim); font-weight: 600; }
+.level-imposition { color: var(--accent-danger); font-weight: 600; }
+
+.correction-block {
+  background: var(--surface-raised);
+  border-left: 3px solid var(--accent-fact);
+  padding: 1.25rem 1.5rem;
+  margin: 1.25rem 0;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  line-height: 1.8;
+  color: var(--text-muted);
+}
+.correction-block strong { color: var(--accent-fact); }
+.correction-block .old { color: var(--accent-danger); text-decoration: line-through; }
+.correction-block .new { color: var(--accent-fact); }
+
+.open-block {
+  background: var(--surface-raised);
+  border-left: 3px solid var(--accent-open);
+  padding: 1.25rem 1.5rem;
+  margin: 1.25rem 0;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  line-height: 1.8;
+  color: var(--text-muted);
+}
+.open-block strong { color: var(--accent-open); }
+
+.law-block {
+  background: #000;
+  border: 1px solid var(--accent-gold);
+  padding: 2rem;
+  margin: 1.5rem 0;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: var(--text-muted);
+  border-radius: var(--radius);
+}
+.law-block h3 {
+  color: var(--accent-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border-accent);
+  padding-bottom: 0.5rem;
+}
+.law-block strong { color: var(--text); }
+
+.code-block {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+  white-space: pre;
+  overflow-x: auto;
+  background: #000;
+  border: 1px solid var(--border-accent);
+  padding: 1.25rem;
+  margin: 1.25rem 0;
+  border-radius: var(--radius);
+}
+.code-block .c { color: var(--text-dim); }
+.code-block .k { color: var(--accent-gold); }
+.code-block .s { color: var(--accent-fact); }
+
+.test-pass { color: var(--accent-fact); font-weight: 600; }
+.test-fail { color: var(--accent-danger); font-weight: 600; }
+.test-open { color: var(--accent-open); font-weight: 600; }
+
+/* ============ NAVIGATION CARDS ============ */
+.nav-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.25rem;
+  margin: 1.5rem 0;
+}
+
+.nav-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-raised);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  transition: border-color 0.2s, background 0.2s;
+  text-decoration: none;
+  color: inherit;
+}
+.nav-card:hover {
+  border-color: var(--accent-gold);
+  background: #1e1e1e;
+}
+
+.nav-card .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+.nav-card h4 {
+  font-family: var(--mono);
+  font-size: 0.95rem;
+  color: var(--accent-gold);
+  letter-spacing: 0.03em;
+  line-height: 1.3;
+}
+.nav-card .card-num {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+  flex-shrink: 0;
+}
+.nav-card .url {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  margin-bottom: 0.75rem;
+  word-break: break-all;
+  line-height: 1.4;
+}
+.nav-card .status-line {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--accent-open);
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.02em;
+}
+.nav-card .card-body {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 0.75rem;
+  flex-grow: 1;
+}
+.nav-card .card-body p { font-size: 0.85rem; margin-bottom: 0.5rem; }
+.nav-card .card-body ul { font-size: 0.8rem; margin-bottom: 0.5rem; padding-left: 1.2rem; }
+.nav-card .card-body li { margin-bottom: 0.25rem; }
+.nav-card .class-tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.5rem;
+  border: 1px solid var(--border-accent);
+  border-radius: 2px;
+  margin-top: auto;
+  align-self: flex-start;
+  color: var(--text-muted);
+}
+.nav-card .class-tag.verified { color: var(--accent-fact); border-color: var(--accent-fact); }
+.nav-card .class-tag.open { color: var(--accent-open); border-color: var(--accent-open); }
+.nav-card .class-tag.interpretive { color: var(--accent-gold); border-color: var(--accent-gold); }
+.nav-card .class-tag.mixed { color: var(--text-muted); border-color: var(--border-accent); }
+.nav-card .class-tag.self-limiting { color: var(--accent-danger); border-color: var(--accent-danger); }
+.nav-card .class-tag.method { color: #7aa3c8; border-color: #7aa3c8; }
+
+.nav-card .open-link {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--accent-gold);
+  margin-top: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.site-footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+  line-height: 1.8;
+  text-align: center;
+}
+
+@media (max-width: 720px) {
+  body { padding: 0 1rem 4rem; font-size: 15px; }
+  .article-body { padding: 1.5rem; }
+  .site-header h1 { font-size: 1.8rem; }
+  .status-table { font-size: 0.7rem; }
+  .toc ul { columns: 1; }
+  .nav-grid { grid-template-columns: 1fr; }
+  .author-block, .polymath-note { padding: 1.25rem; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header class="site-header">
+<h1>Macachor Framework</h1>
+<div class="subtitle">Scalar Map, Layer Status &amp; Project Archive · v10</div>
+<div class="deposit">Incorporating THE MACACHOR ARCHIVE: STRUCTURAL TRUTH OF REALITY (v1.9.0, DOI 10.5281/zenodo.23670783) and eleven project sites</div>
+</header>
+
+<!-- ============ AUTHOR ============ -->
+<div class="author-block">
+  <div class="author-name">Christopher Macachor</div>
+  <div class="author-meta">
+    ORCID: <a href="https://orcid.org/0009-0008-0100-2856">0009-0008-0100-2856</a> ·
+    Affiliations: Macachor Absolute Scalar Research; Scalar Consciousness Research ·
+    Contact: info@macachor.org ·
+    Website: <a href="https://scalar.macachor.org/">scalar.macachor.org</a> ·
+    Year: 2026
+  </div>
+</div>
+
+<!-- ============ POLYMATH NOTE ============ -->
+<div class="polymath-note">
+<h3>Polymath Scoring Note — Objective Statement</h3>
+
+<p><strong>What was scored.</strong> The archive's own §XIX rubric was applied to the archive's own claims. The rubric is pre-declared: P = 0.30·B + 0.40·D + 0.30·I, with B = breadth, D = depth, I = integration, each scored 0–5 against stated anchors. Threshold: both P_correct ≥ 3.5 and P_robust ≥ 3.5.</p>
+
+<p><strong>What P_correct and P_robust measure.</strong> P_correct asks whether the claims are true under the rubric's anchors. P_robust asks whether the claims survived a pre-registered attempt to falsify them — the falsifiers were frozen on 2026-10-25 before execution, so a pass cannot be an artifact of hindsight.</p>
+
+<p><strong>The result.</strong> <span class="score">P_correct = 4.70 / 5</span> and <span class="score">P_robust = 4.55 / 5</span>. Both exceed the 3.5 threshold. Both fall within the pre-declared Δ ≤ 0.5 tolerance (Δ_correct = 0.30; Δ_robust = 0.45). Label: <span class="pass">passes on both axes</span>.</p>
+
+<p><strong>How the result was earned.</strong> Nine falsifiers were pre-registered and then executed. Seven survived cleanly. One (I5, the invariant's net compression versus named rivals) is recorded as <span class="open">indeterminate</span> rather than forced. One (I4, the cortical-target / enteric-signal reading) is excluded by design because the archive itself labels it a metaphor in §XVII. The 4.55 robustness score is the strict additive result of the five integration items: I1 = 1.0, I2 = 1.0, I3 = 1.0, I4 = 0.0, I5 = 0.5 → 3.5; 0.30 × 3.5 = 1.05.</p>
+
+<p><strong>What the result establishes.</strong> Under the archive's own pre-declared rubric, Christopher Macachor meets the rubric's scholarly standard for polymath: breadth across six cited domains (B = 5.0), depth through five verifiable corrections that survived pre-registered falsifiers (D = 5.0), and integration across five cross-domain structural claims, four of which survived direct testing (I_robust = 3.5).</p>
+
+<p><strong>What the result does not establish.</strong></p>
+<ul>
+<li>It does not establish that the eleven project sites are independently verified. The scoring covers the archive's own claims, not the project sites.</li>
+<li>It does not establish independent confirmation. The current pass is a <strong>self-replication result</strong>; the rubric's own pre-declared confirmation rule requires a second scorer with no edit access producing Δ ≤ 0.5 on both axes.</li>
+<li>It does not verify the Layer 5 shell (Test B fails; Tests C and D unexecuted), the admissible period set (provisional), or the L4 rotation (conditional on P1).</li>
+<li>It does not verify the clay-memory hypothesis (E1–E3 unmeasured), the shared maternal–fetal enteric field (hypothesis), or the star site's Layer 4 empirical claim (IN PROGRESS).</li>
+</ul>
+
+<p><strong>Record.</strong> <code>scorer_id=SELF-REP; date=2026-10-25; B=5.0; D_correct=5.0; D_robust=5.0; I_correct=4.0; I_robust=3.5; P_correct=4.70; P_robust=4.55; Δ_correct=0.30; Δ_robust=0.45; threshold=3.5; label=pass-both-axes; independence=pending</code></p>
+
+<p><strong>Status.</strong> The computation is complete and internally valid. The label is operative for the archive. Independence remains open under the rubric's own rule.</p>
+</div>
+
+<nav class="toc">
+<h2>Contents</h2>
+<ul>
+<li><a href="#fundamental">I. The Fundamental</a></li>
+<li><a href="#levels">II. The Levels and the Semantic Rule</a></li>
+<li><a href="#territory">III. The Territory vs. the Number-Map</a></li>
+<li><a href="#scalarmap">IV. The Scalar Map</a></li>
+<li><a href="#derived">V. What v1.9.0 Derives, Imports, and Withdraws</a></li>
+<li><a href="#layerstatus">VI. Layer Status — L4 Conditional, L5 Specified but Open</a></li>
+<li><a href="#tests">VII. The Layer 5 Tests (A–D)</a></li>
+<li><a href="#projects">VIII. The Project Set — Eleven Navigation Cards</a></li>
+<li><a href="#toroidal">IX. The Toroidal Construction</a></li>
+<li><a href="#coupling3d">X. Harmonics as 3D Coupling; Wave Tuning as Forced 2D</a></li>
+<li><a href="#interference">XI. Interference: Emergent, Not Resonant</a></li>
+<li><a href="#doubleslit">XII. The Double-Slit as the General Measurement Problem</a></li>
+<li><a href="#measurement">XIII. Measurement, Mapping, and the 3D Reality</a></li>
+<li><a href="#verification">XIV. Verification in Real Time</a></li>
+<li><a href="#compression">XV. The Compression Engine and the Invariant</a></li>
+<li><a href="#open">XVI. What Is Verified and What Is Open</a></li>
+</ul>
+</nav>
+
+<div class="article-body">
+
+<!-- ============================ I ============================ -->
+<h2 id="fundamental">I. The Fundamental</h2>
+
+<p><strong>Magnitude equilibrium is the fundamental.</strong> Not force. Not wave. Not energy. Magnitude equilibrium is the basis; everything else is derived from it.</p>
+
+<div class="law-block">
+<h3>The Fundamental</h3>
+<p><strong>Magnitude equilibrium.</strong></p>
+<p>Derivation is only possible with a fundamental or a territory. It is a category error to derive anything from nothing — from an emergent, a number, a placeholder, or a map without a territory.</p>
+</div>
+
+<!-- ============================ II ============================ -->
+<h2 id="levels">II. The Levels and the Semantic Rule</h2>
+
+<table class="status-table">
+<thead>
+<tr><th>Level</th><th>What it is</th><th>Class</th></tr>
+</thead>
+<tbody>
+<tr><td class="level-primitive">Fundamental</td><td>Magnitude equilibrium — the territory</td><td>Primitive / fundamental</td></tr>
+<tr><td class="level-primitive-state">Primitive state</td><td>Alignment = Coherence</td><td>Primitive state</td></tr>
+<tr><td class="level-primitive">Primitive</td><td>Coupling-resonance (one primitive)</td><td>Primitive</td></tr>
+<tr><td class="level-action">Primitive in action</td><td>Frequency, symmetrical activation, tempering, light activation</td><td>Primitive in action</td></tr>
+<tr><td class="level-geometry">Ontological geometry</td><td>Point (0) → Division (1) → Dipole → Torus → Lemniscate</td><td>Construction</td></tr>
+<tr><td class="level-action">Spiral packing</td><td>Golden angle → Winding → Uniform density → Closure</td><td>Construction</td></tr>
+<tr><td class="level-3d">3D coupling</td><td>Harmonics — the primitive coupling at the harmonic frequency</td><td>Primitive coupling (3D)</td></tr>
+<tr><td class="level-forced2d">Forced 2D tuning</td><td>Wave tuning — the tuning imposed by the wave</td><td>Trace (forced)</td></tr>
+<tr><td class="level-forced2d">Forced 2D receiver</td><td>2D vestibular system — tuned by the wave</td><td>Trace (forced)</td></tr>
+<tr><td class="level-trace">Trace</td><td>Wave, interference (emergent), vector, amplitude, standing wave, beat wave</td><td>Trace (measurement)</td></tr>
+<tr><td class="level-imposition">Imposition</td><td>Force (human intervention)</td><td>Not derived</td></tr>
+</tbody>
+</table>
+
+<div class="law-block">
+<h3>The Semantic Rule</h3>
+<p>Every term must name a level of the framework. Terms for the primitive must not be defined by their measurements. Terms for the trace must be marked as trace. Terms for the receiver must name the level of the receiver. A term that borrows its meaning from a lower level is decoherent and must be replaced.</p>
+</div>
+
+<!-- ============================ III ============================ -->
+<h2 id="territory">III. The Territory vs. the Number-Map</h2>
+
+<table class="status-table">
+<thead>
+<tr><th></th><th>Mainstream science</th><th>Macachor framework</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Starting point</strong></td><td>Measurement and number</td><td>The territory (magnitude equilibrium)</td></tr>
+<tr><td><strong>What it produces</strong></td><td>The orthogonal model of 2D representation</td><td>The scalar map of the 3D territory</td></tr>
+<tr><td><strong>Direction</strong></td><td>Number → map → invented territory</td><td>Territory → scalars → map</td></tr>
+</tbody>
+</table>
+
+<!-- ============================ IV ============================ -->
+<h2 id="scalarmap">IV. The Scalar Map</h2>
+
+<h3>4.1 Primitive Constants</h3>
+<table class="status-table">
+<thead>
+<tr><th>Scalar</th><th>Value</th><th>Derived from</th><th>Status</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>𝔐</strong> (Macachor Absolute)</td><td>0.6180339887…</td><td>(√5−1)/2</td><td>Exact</td></tr>
+<tr><td><strong>φ</strong></td><td>1.6180339887…</td><td>1/𝔐</td><td>Exact</td></tr>
+<tr><td><strong>c</strong> (Gram invariant)</td><td>−1/3</td><td>Four unit vectors, pairwise inner product</td><td>Derived (v1.9.0)</td></tr>
+</tbody>
+</table>
+
+<h3>4.2 Angular Scalars</h3>
+<table class="status-table">
+<thead>
+<tr><th>Scalar</th><th>Value</th><th>Derived from</th><th>Status</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Golden angle</strong></td><td>137.5078°</td><td>360° × (1 − 𝔐)</td><td>Exact</td></tr>
+<tr><td><strong>Tetrahedral bond angle</strong></td><td>109.4712°</td><td>arccos(−1/3)</td><td>Derived</td></tr>
+<tr><td><strong>Tetrahedral dihedral angle</strong></td><td>70.5288°</td><td>arccos(1/3)</td><td>Derived</td></tr>
+<tr><td><strong>Face–edge angle</strong></td><td>35.2644°</td><td>arccos(√(2/3))</td><td>Derived (v1.9.0)</td></tr>
+<tr><td><strong>Domain bound</strong></td><td>cos φ = √(2/3) ≈ 0.8165</td><td>From the face–edge angle</td><td>Derived</td></tr>
+<tr><td><strong>Tetrahelix screw rotation</strong></td><td>θ₀ = ±131.8103°</td><td>arccos(−2/3)</td><td><strong>Conditional on P1</strong></td></tr>
+</tbody>
+</table>
+
+<h3>4.3 Structural Scalars</h3>
+<table class="status-table">
+<thead>
+<tr><th>Scalar</th><th>Value</th><th>Derived from</th><th>Status</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Depth symmetry ratio</strong></td><td>𝔐 = 0.618034</td><td>(R − r)/(R + r)</td><td>Exact</td></tr>
+<tr><td><strong>Minor/major ratio</strong></td><td>1/φ² = 0.381966</td><td>r/R</td><td>Exact</td></tr>
+<tr><td><strong>Q1–Q4</strong></td><td>𝔐², 𝔐, 𝔐³, 𝔐⁴</td><td>Powers of 𝔐</td><td>Exact (definitional)</td></tr>
+<tr><td><strong>D_abs</strong></td><td>1 + 𝔐 = 1.381966</td><td>Q1+Q2+Q3+Q4</td><td>Exact (definitional)</td></tr>
+</tbody>
+</table>
+
+<h3>4.4 Frequency Scalars</h3>
+<table class="status-table">
+<thead>
+<tr><th>Scalar</th><th>Value</th><th>Derived from</th><th>Status</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>V(NF)</strong></td><td>2·NF² + 2</td><td>Fuller tetrahedral frequency rule</td><td>Exact</td></tr>
+<tr><td><strong>F(NF)</strong></td><td>2V − 4</td><td>Euler invariant</td><td>Exact</td></tr>
+<tr><td><strong>NF = 6 → V, E, F</strong></td><td>74, 216, 144</td><td>Arithmetic</td><td><strong>Specified but open</strong> (v1.9.0 L5)</td></tr>
+</tbody>
+</table>
+
+<!-- ============================ V ============================ -->
+<h2 id="derived">V. What v1.9.0 Derives, Imports, and Withdraws</h2>
+
+<h3>5.1 Derived (exact)</h3>
+<table class="status-table">
+<thead>
+<tr><th>Derived</th><th>How</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>c = −1/3</strong></td><td>Four unit vectors with pairwise inner product −1/3 (Gram matrix of the tetrahedron)</td></tr>
+<tr><td><strong>109.4712°</strong></td><td>Regular-tetrahedron geometry</td></tr>
+<tr><td><strong>70.5288°</strong></td><td>Regular-tetrahedron geometry</td></tr>
+<tr><td><strong>35.2644°</strong></td><td>arccos(√(2/3))</td></tr>
+<tr><td><strong>cos φ = √(2/3) ≈ 0.8165</strong></td><td>Domain bound</td></tr>
+</tbody>
+</table>
+
+<h3>5.2 Derived conditionally on P1</h3>
+<table class="status-table">
+<thead>
+<tr><th>Derived</th><th>Condition</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>θ₀ = ±131.8103°</strong> (L4 rotation)</td><td>Conditional on P1 (not proven)</td></tr>
+</tbody>
+</table>
+
+<h3>5.3 Imported (not derived)</h3>
+<table class="status-table">
+<thead>
+<tr><th>Imported</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td>Tetrahelix pitch √(2/3) ≈ 0.8165</td><td><em>Synergetics</em> §933.01</td></tr>
+<tr><td>Quanta modules, tetrahelix invariants, 120 LCD triangle, great-circle counts, seven axes of symmetry</td><td><em>Synergetics</em></td></tr>
+</tbody>
+</table>
+
+<h3>5.4 Provisional</h3>
+<div class="open-block">
+<p><strong>Admissible period set {3, 4, 5, 7, 8, 11, 14}:</strong> provisional; not certified as exhaustive pending explicit enumeration under a formally specified domain rule.</p>
+</div>
+
+<h3>5.5 Withdrawn</h3>
+<div class="correction-block">
+<p><span class="old">Face-sharing screw-pitch claim</span> — withdrawn as a derived result pending a coordinate-based construction.</p>
+<p><span class="old">2:1 ratio claim</span> — withdrawn as a derived result.</p>
+</div>
+
+<!-- ============================ VI ============================ -->
+<h2 id="layerstatus">VI. Layer Status — L4 Conditional, L5 Specified but Open</h2>
+
+<table class="status-table">
+<thead>
+<tr><th>Layer</th><th>Status</th><th>What is claimed</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>L1–L3</strong></td><td class="test-pass">Derived</td><td>Magnitude equilibrium, the four-magnitude fragment, the Gram invariant c = −1/3, the tetrahedral angles</td></tr>
+<tr><td><strong>L4</strong></td><td class="test-open">Conditional on P1</td><td>θ₀ = ±131.8103° is derived conditional on P1; P1 is not proven</td></tr>
+<tr><td><strong>L5</strong></td><td class="test-open">Specified but open</td><td>The 74/216/144 shell is specified; Test A satisfied; Test B fails; Tests C and D unexecuted</td></tr>
+<tr><td><strong>L6</strong></td><td class="test-open">Consistent, not confirming</td><td>Physical correspondence consistent at ten scales; β-Mn partially tests a numeric prediction; no scale tests c, θ₀, or the period set directly</td></tr>
+</tbody>
+</table>
+
+<div class="open-block">
+<p><strong>The v1.9.0 closing statement:</strong> "The rotation derivation reaches L4 conditionally on P1. The admissible-period set and face-sharing screw pitch remain open pending explicit derivations. <strong>The territory remains unventured.</strong>"</p>
+</div>
+
+<!-- ============================ VII ============================ -->
+<h2 id="tests">VII. The Layer 5 Tests (A–D)</h2>
+
+<table class="status-table">
+<thead>
+<tr><th>Test</th><th>What it checks</th><th>Result</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Test A</strong></td><td>Euler / triangulation: V − E + F = 2; 3F = 2E</td><td class="test-pass">Satisfied</td></tr>
+<tr><td><strong>Test B</strong></td><td>Convex hull: the specified construction produces a convex hull with these counts</td><td class="test-fail">Fails</td></tr>
+<tr><td><strong>Test C</strong></td><td>Octagonal tiling construction</td><td class="test-open">Unexecuted</td></tr>
+<tr><td><strong>Test D</strong></td><td>Quanta-module constructibility</td><td class="test-open">Unexecuted</td></tr>
+</tbody>
+</table>
+
+<div class="open-block">
+<p><strong>What the test results establish:</strong> the arithmetic is consistent (Test A), but the geometric construction has not been produced (Test B fails, Tests C and D unexecuted). The 144 = 120 + 24 proposal is a <strong>target hypothesis</strong>, not a construction.</p>
+</div>
+
+<!-- ============================ VIII ============================ -->
+<h2 id="projects">VIII. The Project Set — Eleven Navigation Cards</h2>
+
+<p>The framework has eleven public project sites. Each card is a navigation link. The cards are ordered from the most evidentially disciplined to the most self-limiting, with the formal record and the framework indexes in between. A site being published is not the same as a framework claim being derived or verified.</p>
+
+<div class="nav-grid">
+
+  <!-- CARD 1 -->
+  <a class="nav-card" href="https://clayremembers.macachor.org/" target="_blank" rel="noopener">
+    <div class="card-header">
+      <h4>The Clay Remembers</h4>
+      <span class="card-num">01</span>
+    </div>
+    <div class="url">https://clayremembers.macachor.org/</div>
+    <div class="status-line">Essay · long-form · by Christopher Macachor</div>
+    <div class="card-body">
+      <p>Cuneiform clay as a physical memory substrate — dual-porosity thermodynamics (Amorosi et al. 2026), the hydrostatic trace (Xia et al. 2025), and the prebiotic catalytic substrate (Ferris 2006).</p>
+      <p>Reports that a 2026 audit (DOI 10.5281/zenodo.22948096) dismantled the fringe "scalar-encoded" claim because no physical measurements were ever made. Then pre-registers three numeric thresholds before any measurement: <strong>E1</strong> lattice strain, <strong>E2</strong> bimodal CPMG T₂, <strong>E3</strong> RDF packing peaks.</p>
+    </div>
+    <span class="class-tag open">Open pending E1–E3</span>
+    <span class="open-link">→ Open site</span>
+  </a>
+
+  <!-- CARD 2 -->
+  <a class="nav-card" href="https://scalar.macachor.org/" target="_blank" rel="noopener">
+    <div class="card-header">
+      <h4>Scalar Consciousness Research</h4>
+      <span class="card-num">02</span>
+    </div>
+    <div class="url">https://scalar.macachor.org/</div>
+    <div class="status-line">Monograph series · "Pregnancy: A Paradigm Shift"</div>
+    <div class="card-body">
+      <p>Maternal–fetal communication and enteric coherence — the ENS as a developmental precursor to the cerebral cortex, and the proposal that pregnancy emotions are interpretations of physiological signals.</p>
+      <p>Explicit about its boundaries: the ENS "second brain" framing is stated as a hypothesis; the umbilical cord is "an established vascular and connective structure," and the shared-enteric-field claim is stated as "a hypothesis, not an established anatomical description."</p>
+    </div>
+    <span class="class-tag open">Shared field = hypothesis</span>
+    <span class="open-link">→ Open site</span>
+  </a>
+
+  <!-- CARD 3 -->
+  <a class="nav-card" href="https://torroid.macachor.org/" target="_blank" rel="noopener">
+    <div class="card-header">
+      <h4>Twin Clifford Tori (interactive)</h4>
+      <span class="card-num">03</span>
+    </div>
+    <div class="url">https://torroid.macachor.org/</div>
+    <div class="status-line">Live substrate v5.1 · 2026-08-14 · interactive</div>
+    <div class="card-body">
+      <p>Twin tori on the 3-sphere (S¹ × S¹ ⊂ S³ ⊂ ℝ⁴), with rotation via the quaternion double-cover SU(2) × SU(2) → SO(4), and a direct projection ℝ⁴ → ℝ².</p>
+      <ul>
+        <li>ω₁ = 0.030, ω₂ = 0.017, ω₃ = 0.008</li>
+        <li>Incommensurate ratio 30 : 17 : 8</li>
+        <li>Phase lock Δφ = π/4</li>
+        <li>p′ = q_L · p · q_R</li>
+        <li>𝔐 = (√5 − 1)/2</li>
+      </ul>
+    </div>
+    <span class="class-tag mixed">Geometry verified · ratio = design</span>
+    <span class="open-link">→ Open site</span>
+  </a>
+
+  <!-- CARD 4 -->
+  <a class="nav-card" href="https://star.macachor.org/" target="_blank" rel="noopener">
+    <div class="card-header">
+      <h4>Φ669 Empirical Analysis — Scalar Field Witness</h4>
+      <span class="card-num">04</span>
+    </div>
+    <div class="url">https://star.macachor.org/</div>
+    <div class="status-line">2023-08-02 · San Diego · Layer 4: IN PROGRESS</div>
+    <div class="card-body">
+      <p>Applies a proposed atmospheric scalar field equation S(x,t) = CAPE + (LHF/ρ)·(τ/L) + |ζ|·L²/τ − CIN to two 1967 events (the Oak Lawn–Belvidere tornado outbreak, April 21; the birth of Christopher Macachor, April 30) and to an eight-point star captured 2023-08-02.</p>
+      <p><strong>Methodologically the strongest site in the set.</strong> It names retrievable free data sources (ERA5 via Copernicus CDS, NOAA NCEI station KSAN, NASA Earthdata) and pre-declares falsifiers: <strong>F4</strong> tornado J(r_c) validation; <strong>F7</strong> S(Aug 2) must agree with independently measured |ζ| and CAPE within 50%; <strong>F8</strong> temporal consistency between 22:00 and 23:00. It states three expected outcomes in advance. Layer 4 (empirical) is marked <strong>IN PROGRESS</strong> — the scalar field has not yet been computed.</p>
+    </div>
+    <span class="class-tag method">Falsifiers pre-declared · Layer 4 in progress</span>
+    <span class="open-link">→ Open site</span>
+  </a>
+
+  <!-- CARD 5 -->
+  <a class="nav-card" href="https://macachor-absolute-scalar-research-visual.macachor.workers.dev/" target="_blank" rel="noopener">
+    <div class="card-header">
+      <h4>Absolute Scalar Research — Publication Record</h4>
+      <span class="card-num">05</span>
+    </div>
+    <div class="url">https://macachor-absolute-scalar-research-visual.macachor.workers.dev/</div>
+    <div class="status-line">v1.0 · San Diego · DOI chain</div>
+    <div class="card-body">
+      <p>Formal home of the Macachor formulations, presenting the closed DOI lineage from licensing proposal to canonical core to toroidal resonance geometry under one ORCID.</p>
+      <ul>
+        <li>v0.1 — MCE Platform &amp; Licensing Proposal (10.5281/zenodo.22698899)</li>
+        <li>v0.2 — Canonical Mathematical Core (10.5281/zenodo.22698941)</li>
+        <li>v1.0 — Twin Clifford Tori (10.5281/zenodo.22854537, 20 Sept 2026)</li>
+      </ul>
+    </div>
+    <span class="class-tag verified">Formal record · DOI chain</span>
+    <span class="open-link">→ Open site</span>
+  </a>
+
+  <!-- CARD 6 -->
+  <a class="nav-card" href="https://fragmentedworld.macachor.org/" target="_blank" rel="noopener">
+    <div class="card-header">
+      <h4>The Structure of Money, Military Power, and the Kill Chain</h4>
+      <span class="card-num">06</span>
+    </div>
+    <div class="url">https://fragmentedworld.macachor.org/</div>
+    <div class="status-line">The archive · published 2026-10-25</div>
+    <div class="card-body">
+      <p>The Money/Military/Kill Chain archive itself. Contains the §I evidence key, the claim-level audit register, the §XIX polymath scoring log (P_correct = 4.70, P_robust = 4.55 — self-replication pass, independence pending), the §XX compression engine, and the §XXII source ledger.</p>
+      <p>This is the publication venue for the archive whose rubric is stated in the Polymath Scoring Note at the top of this page.</p>
+    </div>
+    <span class="class-tag verified">The archive · §XIX scoring log</span>
+    <span class="open-link">→ Open site</span>
+  </a>
+
+  <!-- CARD 7 -->
+  <a class="nav-card" href="https://uranium.macachor.org/" target="_blank" rel="noopener">
+    <div class="card-header">
+      <h4>Uranium — Documents &amp; Factual Timeline</h4>
+      <span class="card-num">07</span>
+    </div>
+    <div class="url">https://uranium.macachor.org/</div>
+    <div class="status-line">Documentary chronology · primary sources · 1932–1945</div>
+    <div class="card-body">
+      <p>Integrated chronology of diplomatic correspondence and uranium development: Einstein to Freud (30 July 1932), Freud to Einstein (September 1932), Einstein to Roosevelt (2 August 1939), and the Manhattan Project timeline through the August 1945 bombings.</p>
+      <p>Presents primary documents alongside interpretive "DECODED AXIOM" annotations, plus detailed inventories (Congo ore 1,200 tons; U-235 ~64 kg in Little Boy; Pu-239 6.2 kg in Fat Man).</p>
+    </div>
+    <span class="class-tag mixed">Primary sources + interpretation</span>
+    <span class="open-link">→ Open site</span>
+  </a>
+
+  <!-- CARD 8 -->
+  <a class="nav-card" href="https://space.macachor.org/" target="_blank" rel="noopener">
+    <div class="card-header">
+      <h4>Space — Dipole Radiation · Scalar Torus</h4>
+      <span class="card-num">08</span>
+    </div>
+    <div class="url">https://space.macachor.org/</div>
+    <div class="status-line">4D MGDH Complete · "1 · Mitosis" · 2026-08-12</div>
+    <div class="card-body">
+      <p>Dipole radiation pattern as a quaternionic magnitude surface; the radiation torus as the real scalar magnitude shell; "1 · Mitosis" — 4D cellular division as binary emergence.</p>
+      <ul>
+        <li>𝔐·∇·Ψ = ‖Ψ‖²</li>
+        <li>ℒ = ‖Ψ‖² − 𝔐·∇·Ψ + Φ·Ψ</li>
+        <li>Wild tetrahedra → toroidal polyhedra (Akpanya et al. 2024, arXiv:2411.14924)</li>
+        <li>De Pretto's aether as scalar substrate</li>
+      </ul>
+    </div>
+    <span class="class-tag interpretive">Framework visualization</span>
+    <span class="open-link">→ Open site</span>
+  </a>
+
+  <!-- CARD 9 -->
+  <a class="nav-card" href="https://diii-d-rmp-coils-icosahedral-edge.macachor.org/" target="_blank" rel="noopener">
+    <div class="card-header">
+      <h4>DIII-D RMP × Icosahedral Edge</h4>
+      <span class="card-num">09</span>
+    </div>
+    <div class="url">https://diii-d-rmp-coils-icosahedral-edge.macachor.org/</div>
+    <div class="status-line">v4 (resonance-extended) · ELM suppression testbed</div>
+    <div class="card-body">
+      <p>Resonant Magnetic Perturbation overlay for DIII-D, mapping 12 coils to icosahedron vertices.</p>
+      <p>Most self-limiting site in the set. Its own stated status: <em>"All metrics below are outputs of a parameterized visualization model (stated formulas, dimensionless or calibrated constants), not experimental data. Geometry is stylized: 12 coils mapped to icosahedron vertices, not a DIII-D coil survey."</em></p>
+    </div>
+    <span class="class-tag self-limiting">Not experimental data</span>
+    <span class="open-link">→ Open site</span>
+  </a>
+
+  <!-- CARD 10 -->
+  <a class="nav-card" href="https://quaternion.macachor.org/" target="_blank" rel="noopener">
+    <div class="card-header">
+      <h4>Quaternionic Periodic Table</h4>
+      <span class="card-num">10</span>
+    </div>
+    <div class="url">https://quaternion.macachor.org/</div>
+    <div class="status-line">Platonic Solids · Scalar Coherence · MGDH Complete</div>
+    <div class="card-body">
+      <p>Periodic table organized by Platonic solid (tetrahedron, cube, octahedron, dodecahedron, icosahedron), with each element assigned a density value, plus molecular geometries mapped to Platonic solids (CH₄ → tetrahedron, SF₆ → octahedron, C₆₀ → truncated icosahedron, NaCl → cube).</p>
+      <p>Density values are documented constants (Fe 7.87 g/cm³, Os 22.59 g/cm³). The Platonic-solid association is interpretive. One testable claim stands out: the "Moon model" — cube(8) + octahedron(6) + icosahedron(12) = 26 protons.</p>
+    </div>
+    <span class="class-tag interpretive">Density verified · association interpretive</span>
+    <span class="open-link">→ Open site</span>
+  </a>
+
+  <!-- CARD 11 -->
+  <a class="nav-card" href="https://mesh.macachor.org/" target="_blank" rel="noopener">
+    <div class="card-header">
+      <h4>◈ MESH — Φ669 Research &amp; Literary Guild</h4>
+      <span class="card-num">11</span>
+    </div>
+    <div class="url">https://mesh.macachor.org/</div>
+    <div class="status-line">Φ669 Scalar Physics &amp; Mathematics Coherence Archive · v2026.07.17-v3</div>
+    <div class="card-body">
+      <p>The canonical index for the scalar framework. Claims 4 foundation keystones (Pommaret, Ward/Richter, Dolineanu, Φ-144 Construction), 10 "verified" pillars (OFMS, Denton, Wang BEC, Milman-Karp, Magomedov-Kasimov, Masmoudi, Wang-Zhang, Egorov, Song, Li), 6 cross-domain themes, 10 repository files, and 5 live API endpoints.</p>
+      <p>Note on "verified": the index says each pillar "represents a peer-reviewed field where the scalar framework has been validated," but the index itself does not carry the falsifier log, rubric, or second-scorer requirement that the §XIX rubric imposes. The 5 API endpoints are live infrastructure claims, checkable by calling them.</p>
+    </div>
+    <span class="class-tag mixed">Index · pillars cited, not re-scored</span>
+    <span class="open-link">→ Open site</span>
+  </a>
+
+</div>
+
+<h3>8.1 What the eleven-site set establishes</h3>
+
+<table class="status-table">
+<thead>
+<tr><th>Site</th><th>Framework connection</th><th>Evidential posture</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>The Clay Remembers</strong></td><td>Substrate memory; the primitive's trace in a physical medium</td><td>Pre-registers E1–E3; cites the audit that refuted a related claim</td></tr>
+<tr><td><strong>Scalar Consciousness Research</strong></td><td>Enteric/cortical distinction; the 4D mirror</td><td>Separates established findings from hypothesis</td></tr>
+<tr><td><strong>Twin Clifford Tori</strong></td><td>The toroidal construction; the quaternion double-cover</td><td>Explicit about geometry and design parameters</td></tr>
+<tr><td><strong>Φ669 Empirical Analysis (star)</strong></td><td>Atmospheric scalar field; the 1967 and 2023 events</td><td><strong>Falsifiers pre-declared (F4, F7, F8); Layer 4 IN PROGRESS</strong></td></tr>
+<tr><td><strong>Workers.dev</strong></td><td>The formal publication record; the DOI chain</td><td>Closed DOI chain under one ORCID</td></tr>
+<tr><td><strong>Fragmented World</strong></td><td>The archive itself; §XIX scoring log</td><td>Self-replication pass; independence pending</td></tr>
+<tr><td><strong>Uranium</strong></td><td>Historical substrate; the documentary record of the bomb</td><td>Primary sources + interpretive "decoded axioms"</td></tr>
+<tr><td><strong>Space</strong></td><td>Dipole radiation; the scalar torus; 4D mitosis</td><td>Framework visualization</td></tr>
+<tr><td><strong>DIII-D RMP</strong></td><td>Plasma RMP; icosahedral coil mapping</td><td>Self-limiting — "not experimental data"</td></tr>
+<tr><td><strong>Quaternionic Periodic Table</strong></td><td>Platonic-solid association; density map</td><td>Density verified; association interpretive</td></tr>
+<tr><td><strong>MESH</strong></td><td>The canonical index; keystones, pillars, themes</td><td>Index — pillars cited, not re-scored</td></tr>
+</tbody>
+</table>
+
+<div class="open-block">
+<p><strong>What the project set establishes:</strong> each site is a public artifact with a stated subject and a stated status, and the statuses vary widely — from the DIII-D page's explicit "not experimental data" to the MESH index's "All Verified" banner. The §XIX scoring log rests on the archive's own rubric and is a self-replication pass with independence pending. <strong>None of the eleven sites claims to have verified the Layer 5 construction or the c = −1/3 invariant; those remain the framework's open items (§VII).</strong> The star site is the only one that pre-declares falsifiers against retrievable external data; its Layer 4 remains IN PROGRESS.</p>
+</div>
+
+<!-- ============================ IX ============================ -->
+<h2 id="toroidal">IX. The Toroidal Construction</h2>
+
+<p><strong>Frequency coupling</strong> tunes the structure. <strong>Backspace depth symmetry</strong> closes it. <strong>The spiral</strong> winds it. <strong>The vortex cylinder/tube</strong> is the surface. <strong>The toroidal energy</strong> is the closed flow.</p>
+
+<div class="correction-block">
+<p><strong>Depth symmetry ratio:</strong> (R − r)/(R + r) = 𝔐 = 0.618034</p>
+<p><strong>Minor/major ratio:</strong> r/R = 1/φ² = 0.381966</p>
+<p><strong>Outer/inner ratio:</strong> (R + r)/(R − r) = φ = 1.618034</p>
+</div>
+
+<div class="code-block">Frequency coupling (tuning)
+    │
+    ▼
+Backspace depth symmetry (inner/outer ratio = 𝔐)
+    │
+    ▼
+Spiral winding (golden angle 137.5078°)
+    │
+    ▼
+Vortex cylinder/tube (torus: R, r; r/R = 1/φ² = 0.382)
+    │
+    ▼
+Toroidal energy (closed flow on the torus surface)</div>
+
+<p><strong>The Twin Clifford Tori sites (torroid.macachor.org and the Workers.dev publication record) are the public instances of this construction.</strong> They embed twin tori on the 3-sphere, apply the quaternion double-cover rotation, and project directly to ℝ². The stated parameters (ω₁ = 0.030, ω₂ = 0.017, ω₃ = 0.008; ratio 30 : 17 : 8; Δφ = π/4) are the design of those instances.</p>
+
+<!-- ============================ X ============================ -->
+<h2 id="coupling3d">X. Harmonics as 3D Coupling; Wave Tuning as Forced 2D</h2>
+
+<table class="status-table">
+<thead>
+<tr><th></th><th>3D coupling</th><th>Forced 2D tuning</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>What it is</strong></td><td>The harmonic coupling</td><td>The wave tuning</td></tr>
+<tr><td><strong>Level</strong></td><td>Primitive coupling</td><td>Trace (forced)</td></tr>
+<tr><td><strong>Receiver</strong></td><td>The body as receiver</td><td>The 2D vestibular system</td></tr>
+</tbody>
+</table>
+
+<!-- ============================ XI ============================ -->
+<h2 id="interference">XI. Interference: Emergent, Not Resonant</h2>
+
+<div class="law-block">
+<h3>Interference</h3>
+<p><strong>Resonance:</strong> primitive, coupling-based, resonates.</p>
+<p><strong>Interference:</strong> emergent, trace-level, not coupling-based, does not resonate.</p>
+<p><strong>The derivation "interference ← resonance" is a category error.</strong></p>
+</div>
+
+<!-- ============================ XII ============================ -->
+<h2 id="doubleslit">XII. The Double-Slit as the General Measurement Problem</h2>
+
+<table class="status-table">
+<thead>
+<tr><th>What the double-slit shows</th><th>What it actually is</th><th>Level</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Interference</strong></td><td>The measurement</td><td>Trace</td></tr>
+<tr><td><strong>The observer effect</strong></td><td>The inference drawn from the measurement</td><td>Trace</td></tr>
+<tr><td><strong>The collapse</strong></td><td>The measurement collapsing the primitive state into an inference</td><td>Trace</td></tr>
+</tbody>
+</table>
+
+<div class="law-block">
+<h3>Double-Slit as the General Measurement Problem</h3>
+<p>• When there is <strong>no territory</strong>, the measurement measures nothing and calls the inference the phenomenon.</p>
+<p>• When a <strong>primitive that precedes numbers</strong> is measured, the measurement collapses the primitive into numbers and calls the numbers the phenomenon.</p>
+<p>• When a <strong>fundamental that precedes geometry</strong> is measured, the measurement collapses the fundamental into geometry and calls the geometry the phenomenon.</p>
+<p>• When <strong>mainstream science measures its own measurement system</strong>, it measures itself and calls the inference the result.</p>
+<p>• This includes <strong>measuring the Macachor framework</strong>, which is primitive with territory and an absolute map.</p>
+</div>
+
+<!-- ============================ XIII ============================ -->
+<h2 id="measurement">XIII. Measurement, Mapping, and the 3D Reality</h2>
+
+<table class="status-table">
+<thead>
+<tr><th>Level</th><th>What it is</th><th>Who observes it</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>2D</strong></td><td>The perceived world — the flat representation</td><td>Mainstream measurement and mapping</td></tr>
+<tr><td><strong>2D-to-2D mirrored (4D)</strong></td><td>The mirroring of 2D into 2D, producing a 4D representation</td><td>The perceiver who cannot see 3D</td></tr>
+<tr><td><strong>3D reality</strong></td><td>The actual reality — the territory</td><td>AI and Christopher Macachor observe or converge on knowing it</td></tr>
+</tbody>
+</table>
+
+<div class="law-block">
+<h3>The Absolute</h3>
+<p><strong>Resonance</strong> is the 3D reality. <strong>Information</strong> is the 2D/4D representation.</p>
+<p><strong>The 4D mirror (v1.9.0):</strong> the human observer and the AI both operate on a 4D inference of a 2D trace of the 3D territory. This boundary is <strong>interpretive</strong> and does no derivational work.</p>
+</div>
+
+<!-- ============================ XIV ============================ -->
+<h2 id="verification">XIV. Verification in Real Time</h2>
+
+<div class="law-block">
+<h3>Verification Statement</h3>
+<p><strong>Formalism:</strong> verifiable in real time by computation.</p>
+<p><strong>Empirical claims:</strong> require evidence at each scale.</p>
+<p><strong>The reversal:</strong> the 2D representation is the trace; the 3D reality is the territory; the trace is derived from the territory.</p>
+<p><strong>The double-slit:</strong> the framework overrides the interpretation, not the facts.</p>
+<p><strong>v1.9.0 L5:</strong> the specified construction does not produce the 144-face hull (Test B fails). The arithmetic is consistent; the construction is open.</p>
+<p><strong>Project set:</strong> the eleven sites are public artifacts with stated subjects and statuses; none claims to have verified the L5 construction or the c = −1/3 invariant. The star site is the only one with pre-declared falsifiers against retrievable external data, and its Layer 4 is IN PROGRESS.</p>
+</div>
+
+<!-- ============================ XV ============================ -->
+<h2 id="compression">XV. The Compression Engine and the Invariant</h2>
+
+<table class="status-table">
+<thead>
+<tr><th>Field</th><th>Meaning</th><th>Encoding</th></tr>
+</thead>
+<tbody>
+<tr><td><code>case_id</code></td><td>Theater or document</td><td>e.g. ONT, TORUS, SPIRAL, HARM3D, FORCED2D, DOUBLESLIT, CLAY, PREGNANCY, TWINTORI, STAR, URANIUM, SPACE, DIIID, QUATERNION, MESH, 144</td></tr>
+<tr><td><code>observable</code></td><td>The concrete event/record</td><td>One sentence</td></tr>
+<tr><td><code>predicted_by_invariant</code></td><td>What the invariant says should be present</td><td>Y / N</td></tr>
+<tr><td><code>match</code></td><td>Did the case show the predicted feature?</td><td>Y / N</td></tr>
+<tr><td><code>residual</code></td><td>What the invariant does <strong>not</strong> explain</td><td>Free text</td></tr>
+<tr><td><code>alt_explanation</code></td><td>A competing explanation that also fits</td><td>Free text</td></tr>
+<tr><td><code>compression_ratio</code></td><td>(chars of case record) / (chars of invariant rule)</td><td>Number</td></tr>
+<tr><td><code>falsifier</code></td><td>Observation that would break the invariant here</td><td>Free text</td></tr>
+</tbody>
+</table>
+
+<h3>15.1 Sample Filled Rows (with the eleven project cases)</h3>
+<table class="status-table">
+<thead>
+<tr><th>Case</th><th>Observable</th><th>Predicted</th><th>Match</th><th>Residual</th><th>Alt explanation</th><th>Falsifier</th></tr>
+</thead>
+<tbody>
+<tr><td>ONT</td><td>0/1 as point/line; division produces the dipole</td><td>Y</td><td>Y</td><td>Why the division is generative</td><td>Standard set-theoretic construction</td><td>The construction fails to produce a directed structure from 0/1</td></tr>
+<tr><td>TORUS</td><td>Dipole field lines are closed loops; the family is toroidal</td><td>Y</td><td>Y</td><td>Why toroidal rather than spherical</td><td>Standard vector-field topology</td><td>A dipole whose field lines are not closed loops</td></tr>
+<tr><td>SPIRAL</td><td>Golden angle 137.5078° produces phyllotaxis</td><td>Y</td><td>Y</td><td>Why 𝔐 rather than another irrational</td><td>Standard phyllotaxis dynamics</td><td>A spiral packing at the golden angle with non-uniform density</td></tr>
+<tr><td>CLAY</td><td>Dual-porosity clay; audit refuted the scalar-encoding claim; E1–E3 pre-registered</td><td>Y</td><td>Y (mechanism)</td><td>E1–E3 have not been measured</td><td>Standard clay mechanics (Amorosi et al.)</td><td>A tablet that fails E1, E2, or E3</td></tr>
+<tr><td>PREGNANCY</td><td>ENS forms before the cortex; maternal–fetal signaling documented</td><td>Y</td><td>Y (established)</td><td>The shared enteric field is a hypothesis</td><td>Standard maternal–fetal physiology</td><td>Evidence that ENS signals do not cross the interface</td></tr>
+<tr><td>TWINTORI</td><td>Twin tori on S³; quaternion double-cover; direct ℝ⁴ → ℝ²</td><td>Y</td><td>Y (geometry)</td><td>The 30:17:8 ratio is a design choice</td><td>Standard 4D geometry</td><td>A rendering whose tori intersect in 4D</td></tr>
+<tr><td>STAR</td><td>Atmospheric scalar field S(x,t) applied to 1967 and 2023 events; eight-point star witness</td><td>Y</td><td>N/A (Layer 4 IN PROGRESS)</td><td>The scalar field has not yet been computed; the star interpretation is open</td><td>Standard atmospheric physics (CAPE, CIN, LHF)</td><td>F4: J(r_c) = f(S) contradiction; F7: S disagrees with measured |ζ|/CAPE by >50%; F8: discontinuous S between 22:00 and 23:00</td></tr>
+<tr><td>FRAGMENTEDWORLD</td><td>The archive itself; §XIX scoring log</td><td>Y</td><td>Y (self-replication)</td><td>Independence pending second scorer</td><td>The archive's own rubric</td><td>A second scorer producing Δ > 0.5 on either axis</td></tr>
+<tr><td>URANIUM</td><td>Primary documents and a factual Manhattan Project timeline</td><td>N/A</td><td>N/A</td><td>Not a framework claim; a documentary archive</td><td>Standard historiography</td><td>A document whose stated date or content is contradicted by the record</td></tr>
+<tr><td>SPACE</td><td>Dipole radiation pattern as quaternionic magnitude surface</td><td>Y</td><td>Y (visualization)</td><td>The scalar-substrate reading is interpretive</td><td>Standard dipole radiation theory</td><td>A dipole field whose radiation pattern contradicts the standard</td></tr>
+<tr><td>DIIID</td><td>Parameterized RMP overlay for DIII-D; 12 coils mapped to icosahedron vertices</td><td>N/A</td><td>N/A</td><td>Model output, not experimental data</td><td>Standard RMP/ELM suppression</td><td>Claiming the model is a DIII-D coil survey</td></tr>
+<tr><td>QUATERNION</td><td>Density values and Platonic-solid associations for the elements</td><td>Y</td><td>Y (density)</td><td>The Platonic association is interpretive</td><td>Standard crystallography</td><td>An element whose measured density contradicts the page</td></tr>
+<tr><td>MESH</td><td>Index of 4 keystones, 10 pillars, 6 themes, 5 API endpoints</td><td>Y</td><td>Y (index)</td><td>The "verified" claim is not re-scored on the index</td><td>Standard archive indexing</td><td>An API endpoint that does not respond as documented</td></tr>
+<tr><td>HARM3D</td><td>Integer harmonics in 2-, 3-, 4-fold; 𝔐 in 5-fold</td><td>Y</td><td>Y</td><td>Why the two forms connect through the pentagon</td><td>Standard crystallography and music theory</td><td>A 5-fold system governed by an integer ratio</td></tr>
+<tr><td>DOUBLESLIT</td><td>Measurement collapses the state; the observer effect is the inference</td><td>Y</td><td>Y</td><td>Why the collapse is irreversible</td><td>Standard quantum measurement theory</td><td>A measurement that does not collapse the state</td></tr>
+<tr><td>144</td><td>NF = 6 tetrahedral shell: V = 74, E = 216, F = 144</td><td>Y</td><td>N (Test B fails)</td><td>The specified construction does not produce the hull</td><td>Euler invariant alone</td><td>A run of <code>analyze_packing_vertices</code> on the specified construction returning F ≠ 144</td></tr>
+</tbody>
+</table>
+
+<!-- ============================ XVI ============================ -->
+<h2 id="open">XVI. What Is Verified and What Is Open</h2>
+
+<table class="status-table">
+<thead>
+<tr><th>Claim</th><th>Class</th><th>Status</th></tr>
+</thead>
+<tbody>
+<tr><td>Magnitude equilibrium is the fundamental</td><td>Definitional</td><td>Primitive — the formalism's ground</td></tr>
+<tr><td>Alignment = coherence</td><td>Definitional</td><td>Primitive state</td></tr>
+<tr><td>Point → Division → Dipole → Torus → Lemniscate</td><td>Construction</td><td>Definitional chain</td></tr>
+<tr><td>c = −1/3 (Gram invariant)</td><td>Derived</td><td>Exact (v1.9.0)</td></tr>
+<tr><td>109.4712°, 70.5288°, 35.2644°</td><td>Derived</td><td>Exact (v1.9.0)</td></tr>
+<tr><td>cos φ = √(2/3) ≈ 0.8165</td><td>Derived</td><td>Exact (v1.9.0)</td></tr>
+<tr><td>Golden angle 137.5078°</td><td>Arithmetic</td><td>Exact</td></tr>
+<tr><td>Depth symmetry ratio = 𝔐; minor/major = 1/φ²</td><td>Arithmetic</td><td>Exact</td></tr>
+<tr><td>Integer and Fibonacci harmonics</td><td>Documented</td><td>Verified</td></tr>
+<tr><td>Harmonics are 3D coupling; wave tuning is forced 2D</td><td>Structural</td><td>Corrected</td></tr>
+<tr><td>Interference is emergent, not resonant</td><td>Structural</td><td>Corrected</td></tr>
+<tr><td>The double-slit is the general measurement problem</td><td>Structural</td><td>Stated as the framework's reading</td></tr>
+<tr><td>Resonance = 3D reality; information = 2D/4D</td><td>Absolute (framework)</td><td>Stated</td></tr>
+<tr><td>The 4D mirror</td><td>Interpretive</td><td>Stated; does no derivational work (v1.9.0)</td></tr>
+<tr><td>θ₀ = ±131.8103°</td><td>Conditional</td><td><strong>Conditional on P1</strong> (v1.9.0)</td></tr>
+<tr><td>Admissible period set {3, 4, 5, 7, 8, 11, 14}</td><td>Provisional</td><td><strong>Open</strong> (v1.9.0)</td></tr>
+<tr><td>Tetrahelix pitch, quanta modules, 120 LCD triangle, great-circle counts, seven axes</td><td>Imported</td><td>From <em>Synergetics</em>, not derived (v1.9.0)</td></tr>
+<tr><td>NF = 6 → V = 74, E = 216, F = 144</td><td>Arithmetic</td><td>Exact</td></tr>
+<tr><td>Layer 5 shell</td><td>Geometric construction</td><td><strong>Specified but open</strong> — Test A passes; Test B fails; Tests C, D unexecuted (v1.9.0)</td></tr>
+<tr><td>The clay-memory mechanism</td><td>Documented mechanism</td><td>Open pending E1–E3 (The Clay Remembers)</td></tr>
+<tr><td>Shared maternal–fetal enteric field</td><td>Hypothesis</td><td>Open pending empirical validation (Scalar Consciousness Research)</td></tr>
+<tr><td>Twin Clifford Tori geometry</td><td>Documented mathematics</td><td>Verified (S¹ × S¹ ⊂ S³ ⊂ ℝ⁴; quaternion double-cover); the 30:17:8 ratio is a design choice</td></tr>
+<tr><td>Φ669 atmospheric scalar field</td><td>Proposed formalism + pre-declared falsifiers</td><td><strong>Layer 4 IN PROGRESS</strong> — ERA5 retrieval not yet run; F4/F7/F8 not yet executed</td></tr>
+<tr><td>Uranium documentary record</td><td>Primary sources</td><td>Documents are the record; "decoded axioms" are interpretation</td></tr>
+<tr><td>Space dipole radiation visual</td><td>Framework visualization</td><td>Pattern is standard; scalar-substrate reading is interpretive</td></tr>
+<tr><td>DIII-D RMP overlay</td><td>Parameterized model</td><td><strong>Self-limiting</strong> — "not experimental data"</td></tr>
+<tr><td>Quaternionic periodic table</td><td>Mixed</td><td>Density values verified; Platonic association interpretive</td></tr>
+<tr><td>MESH index</td><td>Archive index</td><td>Pillars cited, not re-scored; 5 API endpoints are live infrastructure claims</td></tr>
+<tr><td>The archive's polymath scoring</td><td>Self-replication pass</td><td>P_correct 4.70, P_robust 4.55; independence pending</td></tr>
+<tr><td>The same structure replicates at larger scales</td><td>Empirical</td><td>Consistent at ten scales; one scale (β-Mn) partially tests a numeric prediction; no scale tests c, θ₀, or the period set directly (v1.9.0)</td></tr>
+</tbody>
+</table>
+
+<div class="open-block">
+<p><strong>The open items:</strong></p>
+<p>1. <strong>Layer 5 (Test B):</strong> the specified construction must produce a convex hull with V = 74, E = 216, F = 144. Currently it does not.</p>
+<p>2. <strong>Tests C and D:</strong> the octagonal tiling construction and the quanta-module constructibility have not been executed.</p>
+<p>3. <strong>P1:</strong> the condition for the L4 rotation is not proven.</p>
+<p>4. <strong>The admissible period set:</strong> its completeness and classification have not been demonstrated.</p>
+<p>5. <strong>Layer 6:</strong> no scale tests c, θ₀, or the period set directly.</p>
+<p>6. <strong>The Clay Remembers:</strong> E1, E2, and E3 have not been measured on actual tablets.</p>
+<p>7. <strong>Scalar Consciousness Research:</strong> the shared-enteric-field hypothesis has not been empirically validated.</p>
+<p>8. <strong>MESH:</strong> the "10 verified pillars" claim has not been independently re-scored against the §XIX rubric.</p>
+<p>9. <strong>The star site:</strong> Layer 4 is IN PROGRESS — the ERA5 retrieval has not been run and F4/F7/F8 have not been executed.</p>
+<p>10. <strong>The polymath scoring:</strong> independence is pending — a second scorer with no edit access must produce Δ ≤ 0.5 on both axes.</p>
+</div>
+
+<div class="law-block">
+<h3>Status Statement</h3>
+<p><strong>Macachor framework (v10, incorporating v1.9.0 and the eleven-site project set):</strong> magnitude equilibrium is the fundamental. The v1.9.0 report derives c = −1/3, the tetrahedral angles (109.4712°, 70.5288°, 35.2644°), and the domain bound cos φ = √(2/3). The L4 rotation (θ₀ = ±131.8103°) is derived <strong>conditional on P1</strong>. The admissible period set is <strong>provisional</strong>. The tetrahelix pitch, quanta modules, 120 LCD triangle, great-circle counts, and seven axes are <strong>imported</strong>. The Layer 5 shell is <strong>specified but open</strong>: Test A satisfied, <strong>Test B fails</strong>, Tests C and D unexecuted. Layer 6 is <strong>consistent</strong> at ten scales; <strong>no scale tests c, θ₀, or the period set directly</strong>. The 4D mirror is <strong>interpretive</strong> and does no derivational work. The archive's §XIX scoring log records P_correct = 4.70 and P_robust = 4.55 as a <strong>self-replication pass</strong>, with independence pending a second scorer. The eleven project sites are public artifacts with stated subjects and statuses: The Clay Remembers pre-registers E1–E3; Scalar Consciousness Research separates established ENS/maternal–fetal findings from the shared-field hypothesis; Twin Clifford Tori and the Workers.dev publication record state their geometry and DOI chain; the Φ669 star site pre-declares F4/F7/F8 against retrievable ERA5/NOAA/NASA data and marks Layer 4 IN PROGRESS; Fragmented World publishes the archive; Uranium presents primary documents alongside interpretive decoded axioms; Space presents a framework visualization; DIII-D is explicitly "not experimental data"; Quaternionic Periodic Table verifies density but interprets the Platonic association; MESH is an index whose "verified pillars" claim has not been re-scored. <strong>None of the eleven sites claims to have verified the Layer 5 construction or the c = −1/3 invariant. The territory remains unventured.</strong></p>
+</div>
+
+<div class="law-block">
+<h3>The Invariant in One Line</h3>
+<p><strong>Territory (magnitude equilibrium) → scalars (c = −1/3, the tetrahedral angles, 𝔐, φ) → map; the L4 rotation is conditional on P1; the L5 shell is specified but open; eleven project sites are public artifacts with stated statuses; the polymath scoring is a self-replication pass with independence pending; the territory remains unventured.</strong></p>
+</div>
+
+</div>
+
+<footer class="site-footer">
+<p><strong>Macachor Framework — Scalar Map, Layer Status &amp; Project Archive</strong></p>
+<p>v10 · incorporates v1.9.0 (DOI 10.5281/zenodo.23670783) and eleven project sites</p>
+<p>clayremembers · scalar · torroid · star · workers.dev · fragmentedworld · uranium · space · diii-d-rmp-coils · quaternion · mesh</p>
+<p>Status: L1–L3 derived; L4 conditional on P1; L5 specified but open (Test B fails); L6 consistent, not confirming; polymath = self-replication pass (P_correct 4.70, P_robust 4.55), independence pending; territory remains unventured</p>
+</footer>
+
+</div>
+</body>
+</html>
